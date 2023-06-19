@@ -6,14 +6,27 @@ import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
 
+const baseUrl = '//localhost:5555'
+
 const AppRouter = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/" element={<LandingPage />} />
-                <Route path="*" element={<NotFound />} />
+                <Route path="/login" 
+                    element={<LoginPage baseUrl={baseUrl} />} 
+                />
+
+                <Route path="/register" 
+                    element={<RegisterPage baseUrl={baseUrl} />} 
+                    />
+                
+                <Route path="/" 
+                    element={<LandingPage baseUrl={baseUrl} />} 
+                    />
+                
+                <Route path="*" 
+                    element={<NotFound baseUrl={baseUrl} />} 
+                    />
             </Routes>
         </Router>
     );

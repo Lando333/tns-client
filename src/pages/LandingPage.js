@@ -3,18 +3,18 @@ import React, { useState, useEffect } from "react";
 import httpClient from "../httpClient";
 // import { User } from "../types";
 
-const LandingPage = () => {
+const LandingPage = ({baseUrl}) => {
     const [user, setUser] = useState(null);
 
     const logoutUser = async () => {
-        await httpClient.post("//localhost:5555/logout");
+        await httpClient.post(baseUrl + "/logout");
         window.location.href = "/";
     };
 
     useEffect(() => {
         (async () => {
             try {
-                const resp = await httpClient.get("//localhost:5000/@me");
+                const resp = await httpClient.get(baseUrl + "/@me");
                 setUser(resp.data);
             } catch (error) {
                 console.log("Not authenticated");

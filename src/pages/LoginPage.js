@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import httpClient from "../httpClient";
 
-const LoginPage = () => {
+const LoginPage = ({baseUrl}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const logInUser = async () => {
-        console.log(email, password);
+        // console.log(email, password);
 
         try {
-            const resp = await httpClient.post("//localhost:5000/login", {
+            const resp = await httpClient.post(baseUrl + "/login", {
                 email,
                 password,
             });
