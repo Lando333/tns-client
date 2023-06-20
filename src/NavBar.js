@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import LoginBox from "./LoginBox";
 
-const NavBar = () => {
+const NavBar = ({ baseUrl }) => {
     return (
         <nav>
-            <ul className="navbar">
+            <ul>
                 <li>
                     <Link to="/">Home</Link>
                 </li>
@@ -18,6 +19,7 @@ const NavBar = () => {
                     <Link to="/about">About</Link>
                 </li>
             </ul>
+            <LoginBox baseUrl={baseUrl} />
         </nav>
     );
 };
