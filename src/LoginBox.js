@@ -21,6 +21,7 @@ const LoginBox = ({ baseUrl }) => {
     } else {
         return (
             <div>
+                <p>You are not logged in</p>
                 <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
             </div>
         );
