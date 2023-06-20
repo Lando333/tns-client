@@ -26,3 +26,16 @@ input {
   font-size: 18px;
   margin-left: 5px;
 }
+
+.navbar {
+  display: flex;
+  list-style-type: none;
+}
+
+.navbar li {
+  margin-right: 10px;
+}
+
+.navbar li:last-child {
+  margin-right: 0;
+}
