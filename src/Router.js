@@ -5,28 +5,25 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
+import NewTherapistPage from "./pages/NewTherapistPage";
+import SchedulePage from "./pages/SchedulePage";
+import App from "./App";
 
-const baseUrl = '//localhost:5555'
+const baseUrl = "//localhost:5555"
+
 
 const AppRouter = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/login" 
-                    element={<LoginPage baseUrl={baseUrl} />} 
-                />
-
-                <Route path="/register" 
-                    element={<RegisterPage baseUrl={baseUrl} />} 
-                    />
-                
-                <Route path="/" 
-                    element={<LandingPage baseUrl={baseUrl} />} 
-                    />
-                
-                <Route path="*" 
-                    element={<NotFound baseUrl={baseUrl} />} 
-                    />
+                <Route path="/" element={<App baseUrl={baseUrl} />}>
+                    <Route index element={<LandingPage baseUrl={baseUrl} />} />
+                    <Route path="/login" element={<LoginPage baseUrl={baseUrl} />} />
+                    <Route path="/schedule" element={<SchedulePage baseUrl={baseUrl} />} />
+                    <Route path="/register" element={<RegisterPage baseUrl={baseUrl} />} />
+                    <Route path="/create_therapist" element={<NewTherapistPage baseUrl={baseUrl} />} />
+                    <Route path="*" element={<NotFound baseUrl={baseUrl} />} />
+                </Route>
             </Routes>
         </Router>
     );
