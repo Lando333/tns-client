@@ -7,7 +7,9 @@ const App = ({ baseUrl }) => {
     return (
         <div>
             <NavBar baseUrl={baseUrl} />
-            <Outlet />
+            <div className="app-container">
+                <Outlet />
+            </div>
         </div>
     );
 };

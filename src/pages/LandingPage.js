@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import httpClient from "../httpClient";
+import tns_logo from "../images/tns_logo.png";
+
 
 const LandingPage = ({ baseUrl }) => {
     const [user, setUser] = useState(null);
@@ -18,6 +20,7 @@ const LandingPage = ({ baseUrl }) => {
     return (
         <div>
             <h1>Welcome to Tao Now Solutions!</h1>
+            <img id="header-logo" src={tns_logo} alt="TNS Logo" />
             {user != null ? (
                 <div>
                     <h2>Logged in</h2>

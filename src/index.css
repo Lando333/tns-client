@@ -8,6 +8,13 @@ body {
   background-color: rgb(139, 139, 139);
 }
 
+.app-container {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  height: 100vh;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -49,4 +56,9 @@ input {
   right: 10px;
   transform: translate(-50%, -50%);
   text-align: right;
+}
+
+#header-logo{
+  width: 300px;
+  padding-left: 15%;
 }
