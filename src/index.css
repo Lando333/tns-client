@@ -30,12 +30,23 @@ input {
 .navbar {
   display: flex;
   list-style-type: none;
+  margin-left: 60px;
+  margin-top: 21px;
 }
 
 .navbar li {
   margin-right: 10px;
+  padding-left: 30px;
 }
 
 .navbar li:last-child {
   margin-right: 0;
+}
+
+.login {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  transform: translate(-50%, -50%);
+  text-align: right;
 }
