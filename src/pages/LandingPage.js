@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import { Routes } from "react-router-dom"
 import httpClient from "../httpClient";
-// import { User } from "../types";
 
-const LandingPage = ({baseUrl}) => {
+const LandingPage = ({ baseUrl }) => {
     const [user, setUser] = useState(null);
-
-    const logoutUser = async () => {
-        await httpClient.post(baseUrl + "/logout");
-        window.location.href = "/";
-    };
 
     useEffect(() => {
         (async () => {
@@ -28,10 +21,9 @@ const LandingPage = ({baseUrl}) => {
             {user != null ? (
                 <div>
                     <h2>Logged in</h2>
-                    <h3>ID: {user.id}</h3>
+                    <h3>ID: {user.user_id}</h3>
                     <h3>Email: {user.email}</h3>
 
-                    <button onClick={logoutUser}>Logout</button>
                 </div>
             ) : (
                 <div>
