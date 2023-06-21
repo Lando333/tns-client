@@ -5,7 +5,7 @@ import LoginBox from "./LoginBox";
 const NavBar = ({ baseUrl }) => {
     return (
         <nav>
-            <ul>
+            <ul className="navbar">
                 <li>
                     <Link to="/">Home</Link>
                 </li>
