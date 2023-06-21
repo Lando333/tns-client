@@ -19,8 +19,8 @@ const AppRouter = () => {
                 <Route path="/" element={<App baseUrl={baseUrl} />}>
                     <Route index element={<LandingPage baseUrl={baseUrl} />} />
                     <Route path="/login" element={<LoginPage baseUrl={baseUrl} />} />
-                    <Route path="/schedule" element={<SchedulePage baseUrl={baseUrl} />} />
                     <Route path="/register" element={<RegisterPage baseUrl={baseUrl} />} />
+                    <Route path="/schedule" element={<SchedulePage baseUrl={baseUrl} />} />
                     <Route path="/create_therapist" element={<NewTherapistPage baseUrl={baseUrl} />} />
                     <Route path="*" element={<NotFound baseUrl={baseUrl} />} />
                 </Route>
