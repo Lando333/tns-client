@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from "react";
-import httpClient from "../httpClient";
+import React, { useContext } from "react";
 import tns_logo from "../images/tns_logo.png";
+import { UserContext } from "../UserContext";
 
 
-const LandingPage = ({ baseUrl }) => {
-    const [user, setUser] = useState(null);
+const LandingPage = () => {
+    const user = useContext(UserContext);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const resp = await httpClient.get(baseUrl + "/@me");
-                setUser(resp.data);
-            } catch (error) {
-                console.log("Not authenticated");
-            }
-        })();
-    }, []);
 
     return (
         <div className="page-container">
             <img id="header-logo" src={tns_logo} alt="TNS Logo" />
-            
 
             {user != null ? (
                 <div>
