@@ -13,16 +13,21 @@ img{
   margin: auto;
 }
 
+.form-text{
+  font-size: 13px;
+}
+
 .page-container{
-  width: 40%;
+  width: 50%;
   text-align: center;
+  margin: auto;
+  /* background-color: red; */
 }
 
 .app-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: red; */
   /* margin: auto; */
   /* height: 100vh; */
 }
@@ -30,6 +35,27 @@ h1{
   font-size: 60px;
   display: flex;
   justify-content: center;
+}
+
+.sched-form-date-time {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: gray; */
+}
+.date-picker {
+  margin-right: 3px;
+  width: 72px;
+  height: 18px;
+  font-size: 14px;
+  flex: 1;
+}
+.time-select {
+  margin-left: 3px;
+  flex: 1;
+  width: 81px;
+  height: 18px;
 }
 
 code {
@@ -84,7 +110,7 @@ input {
 }
 
 #header-logo{
-  width: 300px;
+  width: 266px;
   display: flex;
   justify-content: center;
 }

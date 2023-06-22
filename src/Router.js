@@ -11,18 +11,17 @@ import App from "./App";
 
 const baseUrl = "//localhost:5555"
 
-
 const AppRouter = () => {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<App baseUrl={baseUrl} />}>
-                    <Route index element={<LandingPage baseUrl={baseUrl} />} />
-                    <Route path="/login" element={<LoginPage baseUrl={baseUrl} />} />
-                    <Route path="/register" element={<RegisterPage baseUrl={baseUrl} />} />
+                    <Route index element={<LandingPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                     <Route path="/schedule" element={<SchedulePage baseUrl={baseUrl} />} />
-                    <Route path="/create_therapist" element={<NewTherapistPage baseUrl={baseUrl} />} />
-                    <Route path="*" element={<NotFound baseUrl={baseUrl} />} />
+                    <Route path="/create_therapist" element={<NewTherapistPage />} />
+                    <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
         </Router>

@@ -1,16 +1,19 @@
 import React from "react";
 import NavBar from "./NavBar";
 import { Outlet } from "react-router-dom";
+import { UserProvider } from "./UserContext";
 
 const App = ({ baseUrl }) => {
-    
+
     return (
-        <div>
-            <NavBar baseUrl={baseUrl} />
-            <div className="app-container">
-                <Outlet />
+        <UserProvider baseUrl={baseUrl}>
+            <div>
+                <NavBar baseUrl={baseUrl} />
+                <div className="app-container">
+                    <Outlet />
+                </div>
             </div>
-        </div>
+        </UserProvider>
     );
 };
 
