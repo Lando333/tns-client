@@ -47,37 +47,25 @@ const SchedulePage = ({ baseUrl }) => {
     // For calendar
     const timeFormat = (date, culture, localizer) =>
         format(date, "h a", { locale: localizer.locale });
-    // For time picker
-    // const formatTime = (date) => {
-    //     if (!date) {
-    //         return ""; // Handle empty case
-    //     }
-    //     const hours = date.getHours();
-    //     const minutes = date.getMinutes();
-    //     const period = hours >= 12 ? "PM" : "AM";
-    //     const formattedHours = hours % 12 || 12;
-    //     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    //     return `${formattedHours}:${formattedMinutes} ${period}`;
-    // };
 
 
     const user = useContext(UserContext);
-    const [allEvents, setAllEvents] = useState(events);
     const [therapists, setTherapists] = useState([]);
+    const [appointments, setAppointments] = useState([]);
     const [services, setServices] = useState([]);
-    const [selectedTherapist, setSelectedTherapist] = useState("");
+    const [selectedTherapist, setSelectedTherapist] = useState({});
     const [newEvent, setNewEvent] = useState({
         therapist: "",
         service: "",
         duration: 60,
-        date: new Date(),
+        start: new Date(),
         time: "12:00 PM",
         end: new Date(),
     });    
 
     useEffect(() => {
         const timeParts = newEvent.time.split(/:|\s/);
-        const selectedTime = new Date(newEvent.date);
+        const selectedTime = new Date(newEvent.start);
         selectedTime.setHours(
             Number(timeParts[0]) + (timeParts[2] === "PM" && timeParts[0] !== "12" ? 12 : 0),
             Number(timeParts[1]),
@@ -85,9 +73,24 @@ const SchedulePage = ({ baseUrl }) => {
         );
         const durationInMinutes = Number(newEvent.duration);
         const end = addMinutes(selectedTime, durationInMinutes);
-        setNewEvent({ ...newEvent, date: selectedTime, end: end });
+        setNewEvent({ ...newEvent, start: selectedTime, end: end });
     }, [newEvent.duration, newEvent.time]);
 
+    useEffect(() => {
+        fetchAppointments();
+    }, []);
+    const fetchAppointments = async () => {
+        try {
+            const response = await fetch(baseUrl + "/all_appointments");
+            if (!response.ok) {
+                throw new Error("Failed to fetch appointments");
+            }
+            const data = await response.json();
+            setAppointments(data);
+        } catch (error) {
+            console.error("Error fetching appointments:", error);
+        }
+    };
 
     useEffect(() => {
         fetchTherapists();
@@ -124,6 +127,30 @@ const SchedulePage = ({ baseUrl }) => {
         }
     };
 
+
+    const [allEvents, setAllEvents] = useState(appointments);
+    // console.log(appointments)
+
+    useEffect(() => {
+        const updatedEvents = appointments.map((appointment) => {
+
+            const startTime = new Date(appointment.start);
+            const endTime = new Date(appointment.end);
+
+            return {
+                ...appointment,
+                start: startTime,
+                end: endTime,
+                title: `${appointment.title}`,
+            };
+        });
+
+        setAllEvents(updatedEvents);
+    }, [appointments]);
+
+
+
+
     const handleAddEvent = async (e) => {
         e.preventDefault();
 
@@ -131,13 +158,14 @@ const SchedulePage = ({ baseUrl }) => {
             const updatedEvent = {
                 title: `${newEvent.therapist} - ${newEvent.service} - ${newEvent.duration}`,
                 user_id: user.user_id,
-                therapist_id: newEvent.therapist,
+                therapist_id: selectedTherapist.therapist_id,
                 service: newEvent.service,
                 duration: newEvent.duration,
                 time: newEvent.time,
-                date: newEvent.date,
-                end: newEvent.end,
+                start: newEvent.start.toISOString(),
+                end: newEvent.end.toISOString(),
             };
+            console.log("updated event")
             console.log(updatedEvent)
 
             // Make the API request to save the event
@@ -148,7 +176,6 @@ const SchedulePage = ({ baseUrl }) => {
                 },
                 body: JSON.stringify(updatedEvent)
             });
-
             if (!response.ok) {
                 throw new Error("Failed to save event");
             }
@@ -158,7 +185,7 @@ const SchedulePage = ({ baseUrl }) => {
                 therapist: "",
                 service: "",
                 duration: 60,
-                date: new Date(),
+                start: new Date(),
                 time: "12:00 PM",
                 end: new Date(),
             });
@@ -224,8 +251,8 @@ const SchedulePage = ({ baseUrl }) => {
                                 placeholderText="Treatment Date"
                                 className="date-picker"
                                 style={{ marginRight: "10px" }}
-                                selected={newEvent.date}
-                                onChange={(date) => setNewEvent({...newEvent, date})}
+                                selected={newEvent.start}
+                                onChange={(start) => setNewEvent({ ...newEvent, start })}
                             />
                         </div>
                         <div className="time-select-wrapper">
@@ -236,7 +263,7 @@ const SchedulePage = ({ baseUrl }) => {
                                 onChange={(e) => {
                                     const selectedTime = e.target.value;
                                     const [hours, minutes] = selectedTime.split(/:|\s/);
-                                    const selectedDate = new Date(newEvent.date);
+                                    const selectedDate = new Date(newEvent.start);
                                     selectedDate.setHours(Number(hours), Number(minutes), 0);
                                     setNewEvent({ ...newEvent, time: selectedTime });
                                 }}
