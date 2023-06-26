@@ -1,12 +1,7 @@
-import React, { useContext } from "react";
 import tns_logo from "../images/tns_logo.png";
-import { UserContext } from "../UserContext";
 
 
 const LandingPage = () => {
-    const user = useContext(UserContext);
-
-
     return (
         <div className="page-container">
             <img id="header-logo" src={tns_logo} alt="TNS Logo" />
