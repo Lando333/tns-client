@@ -20,23 +20,11 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
-const events = [
-    {
+const event = {
         title: "Ryan - Deep Tissue - 90",
         start: new Date("2023-06-21T14:00:00"),
         end: new Date("2023-06-21T15:30:00"),
-    },
-    {
-        title: "Tom - Acupressure - 60",
-        start: new Date("2023-06-21T16:00:00"),
-        end: new Date("2023-06-21T17:00:00"),
-    },
-    {
-        title: "Stephanie - Swedish - 60",
-        start: new Date("2023-06-23T14:00:00"),
-        end: new Date("2023-06-23T15:00:00"),
-    },
-];
+    }
 
 const SchedulePage = ({ baseUrl }) => {
     // Values for formatting Scheduler and Time Picker
@@ -48,12 +36,13 @@ const SchedulePage = ({ baseUrl }) => {
     const timeFormat = (date, culture, localizer) =>
         format(date, "h a", { locale: localizer.locale });
 
-
     const user = useContext(UserContext);
+    const [error, setError ] = useState("")
     const [therapists, setTherapists] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [services, setServices] = useState([]);
-    const [selectedTherapist, setSelectedTherapist] = useState({});
+    const [selectedTherapistName, setSelectedTherapistName] = useState("");
+    const [selectedTherapistId, setSelectedTherapistId] = useState(0);
     const [newEvent, setNewEvent] = useState({
         therapist: "",
         service: "",
@@ -61,7 +50,22 @@ const SchedulePage = ({ baseUrl }) => {
         start: new Date(),
         time: "12:00 PM",
         end: new Date(),
-    });    
+    });
+    const [unavailableDates, setUnavailableDates] = useState([]);
+    const [today, setToday] = useState(new Date());
+
+    useEffect(() => {
+        setToday(new Date()); // Set the minimum selectable date as the current date
+    }, []);
+
+    const filterDate = (date) => {
+        if (date < today)
+            return false
+        const dateString = format(date, "yyyy-MM-dd");
+        if (unavailableDates.includes(dateString))
+            return false
+        return true; // Enables the date
+    };
 
     useEffect(() => {
         const timeParts = newEvent.time.split(/:|\s/);
@@ -87,6 +91,11 @@ const SchedulePage = ({ baseUrl }) => {
             }
             const data = await response.json();
             setAppointments(data);
+            // Extract the unavailable dates from the fetched appointments
+            const unavailableDates = data.map((appointment) =>
+                format(new Date(appointment.start), "yyyy-MM-dd")
+            );
+            setUnavailableDates(unavailableDates);
         } catch (error) {
             console.error("Error fetching appointments:", error);
         }
@@ -110,12 +119,12 @@ const SchedulePage = ({ baseUrl }) => {
 
     useEffect(() => {
         fetchServices();
-    }, [selectedTherapist]);
+    }, [selectedTherapistName]);
     const fetchServices = async () => {
-        if (selectedTherapist) {
+        if (selectedTherapistName) {
             try {
                 const response = await fetch(
-                    baseUrl + `/therapist_services/${selectedTherapist}`
+                    baseUrl + `/therapist_services/${selectedTherapistName}`
                 );
                 const data = await response.json();
                 setServices(data);
@@ -132,10 +141,12 @@ const SchedulePage = ({ baseUrl }) => {
     // console.log(appointments)
 
     useEffect(() => {
+        console.log(appointments)
         const updatedEvents = appointments.map((appointment) => {
-
             const startTime = new Date(appointment.start);
-            const endTime = new Date(appointment.end);
+            const duration = appointment.duration;
+            // Calculate the end time by adding the duration to the start time
+            const endTime = new Date(startTime.getTime() + duration * 60000); // Convert minutes to milliseconds
 
             return {
                 ...appointment,
@@ -155,18 +166,21 @@ const SchedulePage = ({ baseUrl }) => {
         e.preventDefault();
 
         try {
+            const formattedStart = newEvent.start.toISOString();
+            const appointmentDate = formattedStart.split('T')[0];
+
             const updatedEvent = {
-                title: `${newEvent.therapist} - ${newEvent.service} - ${newEvent.duration}`,
                 user_id: user.user_id,
-                therapist_id: selectedTherapist.therapist_id,
+                therapist_id: selectedTherapistId,
                 service: newEvent.service,
                 duration: newEvent.duration,
                 time: newEvent.time,
-                start: newEvent.start.toISOString(),
-                end: newEvent.end.toISOString(),
+                start: appointmentDate,
             };
             console.log("updated event")
             console.log(updatedEvent)
+
+            // Add Payment API HERE
 
             // Make the API request to save the event
             const response = await fetch(baseUrl + "/create_appointment", {
@@ -177,7 +191,10 @@ const SchedulePage = ({ baseUrl }) => {
                 body: JSON.stringify(updatedEvent)
             });
             if (!response.ok) {
-                throw new Error("Failed to save event");
+                const errorData = await response.json();
+                const errorMessage = errorData.error;
+                setError(errorMessage)
+                throw new Error(errorMessage);
             }
 
             setAllEvents([...allEvents, updatedEvent]);
@@ -206,13 +223,17 @@ const SchedulePage = ({ baseUrl }) => {
                             style={{ width: "132px", marginRight: "12px" }}
                             value={newEvent.therapist}
                             onChange={(e) => {
-                                setNewEvent({ ...newEvent, therapist: e.target.value })
-                                setSelectedTherapist(e.target.value)
+                                setNewEvent({ ...newEvent, therapist: e.target.value });
+                                const therapist = therapists.find(
+                                    (therapist) => therapist.name === e.target.value
+                                );
+                                setSelectedTherapistName(e.target.value);
+                                setSelectedTherapistId(therapist ? therapist.therapist_id : "");
                             }}
                         >
                             <option value="">Select a therapist</option>
-                            {therapists.map((therapist, index) => (
-                                <option key={index} value={therapist.name}>
+                            {therapists.map((therapist, therapist_id) => (
+                                <option key={therapist.therapist_id} value={therapist.name}>
                                     {therapist.name}
                                 </option>
                             ))}
@@ -253,6 +274,7 @@ const SchedulePage = ({ baseUrl }) => {
                                 style={{ marginRight: "10px" }}
                                 selected={newEvent.start}
                                 onChange={(start) => setNewEvent({ ...newEvent, start })}
+                                filterDate={filterDate}
                             />
                         </div>
                         <div className="time-select-wrapper">
@@ -284,6 +306,7 @@ const SchedulePage = ({ baseUrl }) => {
                     </div>
 
                     <Button type="submit">Submit</Button>
+                    <p className="error">{error ? error : ""}</p>
                 </Form>
             </div>
             
