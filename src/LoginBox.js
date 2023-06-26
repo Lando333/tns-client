@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import httpClient from "./httpClient";
 import { UserContext } from "./UserContext";
+import Card from 'react-bootstrap/Card';
+
 
 const LoginBox = ({ baseUrl }) => {
     const user = useContext(UserContext);
@@ -11,33 +13,41 @@ const LoginBox = ({ baseUrl }) => {
         window.location.href = "/";
     };
 
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             const resp = await httpClient.get(baseUrl + "/@me");
-    //             setUser(resp.data);
-    //         } catch (error) {
-    //             console.log("Not authenticated");
-    //         }
-    //     })();
-    // }, []);
-
-    
-
     if (user != null) {
-        console.log(user)
-        
-        return <div className="login">
-            <p>Welcome, {user.first_name}!</p>
+        return <Card
+                bg="secondary"
+                border="secondary"
+                key="secondary"
+                style={{ width: '18rem' }}
+                className="login">
+                <Card.Body>
+                    <Card.Title>
+                        Welcome, {user.first_name}!
+                    </Card.Title>
+                    <Card.Text>
+                        <Link to="/" onClick={logoutUser}>Logout</Link>
+                    </Card.Text>
+                </Card.Body>
+            </Card>
 
-            <Link to="/" onClick={logoutUser}>Logout</Link>
-                </div>
+
     } else {
         return (
-            <div className="login">
-                <p>You are not logged in</p>
-                <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-            </div>
+            <Card
+                bg="secondary"
+                border="secondary"
+                key="secondary"
+                style={{ width: '18rem' }}
+                className="login">
+                <Card.Body>
+                    <Card.Title>
+                        You are not logged in
+                    </Card.Title>
+                    <Card.Text>
+                        <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+                    </Card.Text>
+                </Card.Body>
+            </Card>
         );
     }
 };

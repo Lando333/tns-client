@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import LoginBox from "./LoginBox";
 
 const NavBar = ({ baseUrl }) => {
-    return (
+    return (<>
         <nav>
             <ul className="navbar">
                 <li>
@@ -21,6 +21,7 @@ const NavBar = ({ baseUrl }) => {
             </ul>
             <LoginBox baseUrl={baseUrl} />
         </nav>
+    </>
     );
 };
 
