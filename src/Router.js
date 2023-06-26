@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
 import NewTherapistPage from "./pages/NewTherapistPage";
+import MembershipPage from "./pages/MembershipPage";
 import SchedulePage from "./pages/SchedulePage";
 import App from "./App";
 
@@ -21,6 +22,8 @@ const AppRouter = () => {
                     <Route path="/register" element={<RegisterPage baseUrl={baseUrl} />} />
                     <Route path="/schedule" element={<SchedulePage baseUrl={baseUrl} />} />
                     <Route path="/create_therapist" element={<NewTherapistPage />} />
+                    <Route path="/therapist" element={<TherapistPage />} />
+                    <Route path="/membership" element={<MembershipPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
