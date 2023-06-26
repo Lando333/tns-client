@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import httpClient from "./httpClient";
+import { UserContext } from "./UserContext";
 
 const LoginBox = ({ baseUrl }) => {
-    const [user, setUser] = useState(null);
+    const user = useContext(UserContext);
 
     const logoutUser = async () => {
         await httpClient.post(baseUrl + "/logout");
         window.location.href = "/";
     };
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const resp = await httpClient.get(baseUrl + "/@me");
-                setUser(resp.data);
-            } catch (error) {
-                console.log("Not authenticated");
-            }
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             const resp = await httpClient.get(baseUrl + "/@me");
+    //             setUser(resp.data);
+    //         } catch (error) {
+    //             console.log("Not authenticated");
+    //         }
+    //     })();
+    // }, []);
 
     
 
     if (user != null) {
-        // console.log(user)
+        console.log(user)
+        
         return <div className="login">
             <p>Welcome, {user.first_name}!</p>
 

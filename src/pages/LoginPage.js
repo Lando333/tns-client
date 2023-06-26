@@ -6,7 +6,6 @@ const LoginPage = ({baseUrl}) => {
     const [password, setPassword] = useState("");
 
     const logInUser = async () => {
-        // console.log(email, password);
 
         try {
             const resp = await httpClient.post(baseUrl + "/login", {

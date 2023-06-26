@@ -10,7 +10,7 @@ const LandingPage = () => {
     return (
         <div className="page-container">
             <img id="header-logo" src={tns_logo} alt="TNS Logo" />
-{/* 
+
             {user != null ? (
                 <div>
                     <h2>Logged in</h2>
@@ -22,7 +22,7 @@ const LandingPage = () => {
                 <div>
                     <p>You are not logged in</p>
                 </div>
-            )} */}
+            )}
 
             <br /> <br /> <br /> 
             <h4>The In-Home Wellness Program You Have Been Looking For</h4>

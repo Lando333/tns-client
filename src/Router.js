@@ -9,7 +9,7 @@ import NewTherapistPage from "./pages/NewTherapistPage";
 import SchedulePage from "./pages/SchedulePage";
 import App from "./App";
 
-const baseUrl = "//localhost:5555"
+const baseUrl = "http://localhost:5555"
 
 const AppRouter = () => {
     return (
@@ -17,7 +17,7 @@ const AppRouter = () => {
             <Routes>
                 <Route path="/" element={<App baseUrl={baseUrl} />}>
                     <Route index element={<LandingPage />} />
-                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/login" element={<LoginPage baseUrl={baseUrl} />} />
                     <Route path="/register" element={<RegisterPage baseUrl={baseUrl} />} />
                     <Route path="/schedule" element={<SchedulePage baseUrl={baseUrl} />} />
                     <Route path="/create_therapist" element={<NewTherapistPage />} />
