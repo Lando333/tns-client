@@ -110,6 +110,10 @@ input {
   border-radius: 5px;
 }
 
+.error {
+  color: red;
+}
+
 #header-logo {
   width: 266px;
   display: flex;
