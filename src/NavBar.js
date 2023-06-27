@@ -8,11 +8,20 @@ const NavBar = ({ baseUrl }) => {
     const [isTherapist, setIsTherapist] = useState(false);
 
     useEffect(() => {
+        console.log("Inside useEffect");
+        console.log("baseUrl:", baseUrl);
+        console.log("user:", user);
+    }, [baseUrl, user]);
+
+
+    useEffect(() => {
         const fetchTherapists = async () => {
             try {
+                console.log(baseUrl)
                 const response = await fetch(`${baseUrl}/all_therapists`);
                 if (response.ok) {
                     const therapists = await response.json();
+                    console.log(therapists)
                     const therapistIds = therapists.map((therapist) => therapist.therapist_id);
                     setIsTherapist(therapistIds.includes(user.therapist_id));
                 } else {
@@ -22,7 +31,6 @@ const NavBar = ({ baseUrl }) => {
                 console.error("Error while fetching therapists", error);
             }
         };
-
         if (user && user.role === "therapist") {
             fetchTherapists();
         }
@@ -43,7 +51,7 @@ const NavBar = ({ baseUrl }) => {
                 <li>
                     <Link to="/about">About</Link>
                 </li>
-                {!isTherapist &&
+                {isTherapist &&
                 <li>
                     <Link to="/therapist">Therapist Profile</Link>
                 </li>
