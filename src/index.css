@@ -119,3 +119,8 @@ input {
   display: flex;
   justify-content: center;
 }
+
+#time-selector{
+  width: 81px;
+  height: 21px;
+}

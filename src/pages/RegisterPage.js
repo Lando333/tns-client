@@ -29,7 +29,7 @@ const RegisterPage = ({baseUrl}) => {
                 zip_code,
                 country
             });
-
+            console.log(resp)
             window.location.href = "/";
         } catch (error) {
             if (error.response.status === 401) {

@@ -22,7 +22,8 @@ const LoginBox = ({ baseUrl }) => {
                 className="login">
                 <Card.Body>
                     <Card.Title>
-                        Welcome, {user.first_name}!
+                    Welcome, {user.first_name}!<br />
+                    {user.user_id}
                     </Card.Title>
                     <Card.Text>
                         <Link to="/" onClick={logoutUser}>Logout</Link>

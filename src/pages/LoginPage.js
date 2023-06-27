@@ -6,13 +6,12 @@ const LoginPage = ({baseUrl}) => {
     const [password, setPassword] = useState("");
 
     const logInUser = async () => {
-
         try {
             const resp = await httpClient.post(baseUrl + "/login", {
                 email,
                 password,
             });
-
+            console.log(resp)
             window.location.href = "/";
         } catch (error) {
             if (error.response && error.response.status === 401) {

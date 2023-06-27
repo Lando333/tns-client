@@ -206,6 +206,7 @@ const SchedulePage = ({ baseUrl }) => {
                 time: "12:00 PM",
                 end: new Date(),
             });
+            setError("")
         } catch (error) {
             console.error("Error saving event:", error);
         }
@@ -280,6 +281,7 @@ const SchedulePage = ({ baseUrl }) => {
                         <div className="time-select-wrapper">
                             <Form.Control
                                 as="select"
+                                id="time-selector"
                                 className="time-select"
                                 value={newEvent.time}
                                 onChange={(e) => {

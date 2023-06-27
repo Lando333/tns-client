@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import LoginBox from "./LoginBox";
+import { UserContext } from "./UserContext";
 
 const NavBar = ({ baseUrl }) => {
     const user = useContext(UserContext);
@@ -15,11 +16,9 @@ const NavBar = ({ baseUrl }) => {
                     const therapistIds = therapists.map((therapist) => therapist.therapist_id);
                     setIsTherapist(therapistIds.includes(user.therapist_id));
                 } else {
-                    // Handle error response
                     console.error("Failed to fetch therapists");
                 }
             } catch (error) {
-                // Handle fetch error
                 console.error("Error while fetching therapists", error);
             }
         };
@@ -44,9 +43,11 @@ const NavBar = ({ baseUrl }) => {
                 <li>
                     <Link to="/about">About</Link>
                 </li>
-                {isTherapist && <li>
+                {!isTherapist &&
+                <li>
                     <Link to="/therapist">Therapist Profile</Link>
-                </li>}
+                </li>
+                }
             </ul>
             <LoginBox baseUrl={baseUrl} />
         </nav>
