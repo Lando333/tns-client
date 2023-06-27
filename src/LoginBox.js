@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 
 
 const LoginBox = ({ baseUrl }) => {
-    const user = useContext(UserContext);
+    const {user} = useContext(UserContext);
 
     const logoutUser = async () => {
         await httpClient.post(baseUrl + "/logout");
