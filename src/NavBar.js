@@ -51,7 +51,7 @@ const NavBar = ({ baseUrl }) => {
                 <li>
                     <Link to="/about">About</Link>
                 </li>
-                {isTherapist &&
+                {!isTherapist &&
                 <li>
                     <Link to="/therapist">Therapist Profile</Link>
                 </li>

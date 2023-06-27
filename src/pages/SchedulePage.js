@@ -10,8 +10,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { UserContext } from "../UserContext";
+import { loadStripe } from "@stripe/stripe-js";
 
-const locales = {"en-US": require("date-fns/locale/en-US"),};
+const locales = { "en-US": require("date-fns/locale/en-US"), };
 const localizer = dateFnsLocalizer({
     format,
     parse,
@@ -20,11 +21,11 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
-const event = {
-        title: "Ryan - Deep Tissue - 90",
-        start: new Date("2023-06-21T14:00:00"),
-        end: new Date("2023-06-21T15:30:00"),
-    }
+// const event = {
+//     title: "Ryan - Deep Tissue - 90",
+//     start: new Date("2023-06-21T14:00:00"),
+//     end: new Date("2023-06-21T15:30:00"),
+// }
 
 const SchedulePage = ({ baseUrl }) => {
     // Values for formatting Scheduler and Time Picker
@@ -37,7 +38,7 @@ const SchedulePage = ({ baseUrl }) => {
         format(date, "h a", { locale: localizer.locale });
 
     const user = useContext(UserContext);
-    const [error, setError ] = useState("")
+    const [error, setError] = useState("")
     const [therapists, setTherapists] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [services, setServices] = useState([]);
@@ -161,14 +162,11 @@ const SchedulePage = ({ baseUrl }) => {
 
 
 
-
     const handleAddEvent = async (e) => {
         e.preventDefault();
-
         try {
             const formattedStart = newEvent.start.toISOString();
             const appointmentDate = formattedStart.split('T')[0];
-
             const updatedEvent = {
                 user_id: user.user_id,
                 therapist_id: selectedTherapistId,
@@ -180,18 +178,61 @@ const SchedulePage = ({ baseUrl }) => {
             console.log("updated event")
             console.log(updatedEvent)
 
-            // Add Payment API HERE
+            // $$$$$$$$$$$$$ Payment API $$$$$$$$$$$$
+            const stripePromise = loadStripe("pk_test_Tf1S5BkuE7m8m8LfpcfX82LN");
+            if (updatedEvent.duration === 60) {
+                const response = await fetch(baseUrl + "/tx60", {
+                    method: "GET",
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const errorMessage = errorData.message;
+                    setError(errorMessage);
+                    throw new Error(errorMessage);
+                }
+                const { sessionId } = await response.json();
+                // Redirect to Stripe Checkout
+                const stripe = await stripePromise;
+                const { error } = await stripe.redirectToCheckout({
+                    sessionId: sessionId,
+                });
+                if (error) {
+                    setError(error.message);
+                    throw new Error(error.message);
+                }
+            }
+            else if (updatedEvent.duration === 90) {
+                const response = await fetch(baseUrl + "/tx90", {
+                    method: "GET",
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const errorMessage = errorData.message;
+                    setError(errorMessage);
+                    throw new Error(errorMessage);
+                }
+                const { sessionId } = await response.json();
+                // Redirect to Stripe Checkout
+                const stripe = await stripePromise;
+                const { error } = await stripe.redirectToCheckout({
+                    sessionId: sessionId,
+                });
+                if (error) {
+                    setError(error.message);
+                    throw new Error(error.message);
+                }
+            }
 
             // Make the API request to save the event
-            const response = await fetch(baseUrl + "/create_appointment", {
+            const resp = await fetch(baseUrl + "/create_appointment", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(updatedEvent)
             });
-            if (!response.ok) {
-                const errorData = await response.json();
+            if (!resp.ok) {
+                const errorData = await resp.json();
                 const errorMessage = errorData.error;
                 setError(errorMessage)
                 throw new Error(errorMessage);
@@ -210,7 +251,7 @@ const SchedulePage = ({ baseUrl }) => {
         } catch (error) {
             console.error("Error saving event:", error);
         }
-    };
+    }
 
 
     return (
@@ -311,7 +352,7 @@ const SchedulePage = ({ baseUrl }) => {
                     <p className="error">{error ? error : ""}</p>
                 </Form>
             </div>
-            
+
             <Calendar
                 localizer={localizer}
                 events={allEvents}
@@ -322,6 +363,7 @@ const SchedulePage = ({ baseUrl }) => {
                 max={maxTime}
                 formats={{ timeGutterFormat: timeFormat }}
             />
+            <script src="https://js.stripe.com/v3/"></script>
         </div>
     );
 };
