@@ -10,6 +10,7 @@ import MembershipPage from "./pages/MembershipPage";
 import TherapistPage from "./pages/TherapistPage";
 import SchedulePage from "./pages/SchedulePage";
 import AboutPage from "./pages/AboutPage";
+import ThanksPage from "./pages/ThanksPage";
 import App from "./App";
 
 const baseUrl = "http://localhost:5555"
@@ -27,6 +28,7 @@ const AppRouter = () => {
                     <Route path="/therapist" element={<TherapistPage baseUrl={baseUrl} />} />
                     <Route path="/membership" element={<MembershipPage />} />
                     <Route path="/about" element={<AboutPage />} />
+                    <Route path="/thanks" element={<ThanksPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>

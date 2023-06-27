@@ -3,7 +3,7 @@
     grid-template-columns: 1fr repeat(7, minmax(100px, 1fr));
     grid-gap: 30px;
     position: fixed;
-    margin-left: -10%;
+    margin-left: -14%;
 }
 
 .grid-header {

@@ -21,12 +21,6 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
-// const event = {
-//     title: "Ryan - Deep Tissue - 90",
-//     start: new Date("2023-06-21T14:00:00"),
-//     end: new Date("2023-06-21T15:30:00"),
-// }
-
 const SchedulePage = ({ baseUrl }) => {
     // Values for formatting Scheduler and Time Picker
     const minTime = new Date();
@@ -55,9 +49,7 @@ const SchedulePage = ({ baseUrl }) => {
     const [unavailableDates, setUnavailableDates] = useState([]);
     const [today, setToday] = useState(new Date());
 
-    useEffect(() => {
-        setToday(new Date()); // Set the minimum selectable date as the current date
-    }, []);
+    useEffect(() => {setToday(new Date())}, [])
 
     const filterDate = (date) => {
         if (date < today)
@@ -93,9 +85,10 @@ const SchedulePage = ({ baseUrl }) => {
             const data = await response.json();
             setAppointments(data);
             // Extract the unavailable dates from the fetched appointments
-            const unavailableDates = data.map((appointment) =>
-                format(new Date(appointment.start), "yyyy-MM-dd")
-            );
+            // const unavailableDates = data.map((appointment) => {
+            //     console.log("Appointment start:", appointment.start);
+            //     return format(new Date(appointment.start), "yyyy-MM-dd")
+            // });
             setUnavailableDates(unavailableDates);
         } catch (error) {
             console.error("Error fetching appointments:", error);
@@ -137,18 +130,13 @@ const SchedulePage = ({ baseUrl }) => {
         }
     };
 
-
     const [allEvents, setAllEvents] = useState(appointments);
-    // console.log(appointments)
 
     useEffect(() => {
-        console.log(appointments)
         const updatedEvents = appointments.map((appointment) => {
             const startTime = new Date(appointment.start);
             const duration = appointment.duration;
-            // Calculate the end time by adding the duration to the start time
             const endTime = new Date(startTime.getTime() + duration * 60000); // Convert minutes to milliseconds
-
             return {
                 ...appointment,
                 start: startTime,
@@ -159,8 +147,6 @@ const SchedulePage = ({ baseUrl }) => {
 
         setAllEvents(updatedEvents);
     }, [appointments]);
-
-
 
     const handleAddEvent = async (e) => {
         e.preventDefault();
@@ -178,19 +164,37 @@ const SchedulePage = ({ baseUrl }) => {
             console.log("updated event")
             console.log(updatedEvent)
 
+            const r = await fetch(baseUrl + "/check_schedule", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedEvent)
+            });
+            if (!r.ok) {
+                const errorData = await r.json();
+                const errorMessage = errorData.error;
+                setError(errorMessage)
+                throw new Error(errorMessage);
+            }
+
             // $$$$$$$$$$$$$ Payment API $$$$$$$$$$$$
             const stripePromise = loadStripe("pk_test_Tf1S5BkuE7m8m8LfpcfX82LN");
             if (updatedEvent.duration === 60) {
                 const response = await fetch(baseUrl + "/tx60", {
                     method: "GET",
-                });
+                    headers: {
+                        "Content-Type": "application/json"  // Add this line to set the Content-Type header
+                    }
+                })
                 if (!response.ok) {
                     const errorData = await response.json();
                     const errorMessage = errorData.message;
                     setError(errorMessage);
                     throw new Error(errorMessage);
                 }
-                const { sessionId } = await response.json();
+                const responseData = await response.json();
+                const sessionId = responseData.session_id;
                 // Redirect to Stripe Checkout
                 const stripe = await stripePromise;
                 const { error } = await stripe.redirectToCheckout({
@@ -202,16 +206,15 @@ const SchedulePage = ({ baseUrl }) => {
                 }
             }
             else if (updatedEvent.duration === 90) {
-                const response = await fetch(baseUrl + "/tx90", {
-                    method: "GET",
-                });
+                const response = await fetch(baseUrl + "/tx90");
                 if (!response.ok) {
                     const errorData = await response.json();
                     const errorMessage = errorData.message;
                     setError(errorMessage);
                     throw new Error(errorMessage);
                 }
-                const { sessionId } = await response.json();
+                const responseData = await response.json();
+                const sessionId = responseData.session_id;
                 // Redirect to Stripe Checkout
                 const stripe = await stripePromise;
                 const { error } = await stripe.redirectToCheckout({
@@ -223,7 +226,7 @@ const SchedulePage = ({ baseUrl }) => {
                 }
             }
 
-            // Make the API request to save the event
+            // Make the API request to create a new appointment
             const resp = await fetch(baseUrl + "/create_appointment", {
                 method: "POST",
                 headers: {
@@ -238,7 +241,13 @@ const SchedulePage = ({ baseUrl }) => {
                 throw new Error(errorMessage);
             }
 
-            setAllEvents([...allEvents, updatedEvent]);
+            const newEventWithDates = {
+                ...updatedEvent,
+                start: newEvent.start,
+                end: newEvent.end,
+                title: `${selectedTherapistName} - ${newEvent.service} - ${newEvent.duration}`
+            };
+            setAllEvents([...allEvents, newEventWithDates]);
             setNewEvent({
                 therapist: "",
                 service: "",

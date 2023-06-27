@@ -4,8 +4,9 @@ import { UserContext } from "../UserContext";
 import "../profile.css"
 
 const TherapistPage = ({ baseUrl }) => {
-    const user = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const [error, setError] = useState("")
+    const [confirmMsg, setConfirmMsg] = useState("")
     const [schedule, setSchedule] = useState({
         sunday: { startTime: "", endTime: "" },
         monday: { startTime: "", endTime: "" },
@@ -83,9 +84,6 @@ const TherapistPage = ({ baseUrl }) => {
                     endTime: schedule.saturday.endTime,
                 },
             };
-            console.log(updatedSchedule);
-            // console.log(user.user_id);
-
             const response = await fetch(baseUrl + "/update_schedule", {
                 method: "POST",
                 headers: {
@@ -112,10 +110,10 @@ const TherapistPage = ({ baseUrl }) => {
                 friday: { startTime: "", endTime: "" },
                 saturday: { startTime: "", endTime: "" }
             });
+            setConfirmMsg("New Schedule Confirmed!")
             setError("")
         } catch (error) {
-            setError("Error saving schedule: " + error)
-            console.error("Error saving schedule:", error);
+            console.error(error);
         }
     };
 
@@ -140,7 +138,8 @@ const TherapistPage = ({ baseUrl }) => {
     return (
         <div>
             <h1>Update Schedule</h1>
-            {error && error}
+            <p className="error" style={{ textAlign: "center" }}>{error ? error : ""}</p>
+            <p style={{ textAlign: "center", color: "lightgreen" }}>{ confirmMsg ? confirmMsg : "" }</p>
             <form onSubmit={handleSubmit} className="schedule-form">
                 <div className="grid-container">
                     <div className="grid-row">
