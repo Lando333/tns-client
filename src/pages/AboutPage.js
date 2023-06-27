@@ -1,5 +1,4 @@
 import React from "react";
-import tns_logo from "../images/tns_logo.png";
 
 const AboutPage = () => {
     return (

@@ -114,6 +114,7 @@ const TherapistPage = ({ baseUrl }) => {
             });
             setError("")
         } catch (error) {
+            setError("Error saving schedule: " + error)
             console.error("Error saving schedule:", error);
         }
     };
@@ -139,6 +140,7 @@ const TherapistPage = ({ baseUrl }) => {
     return (
         <div>
             <h1>Update Schedule</h1>
+            {error && error}
             <form onSubmit={handleSubmit} className="schedule-form">
                 <div className="grid-container">
                     <div className="grid-row">
