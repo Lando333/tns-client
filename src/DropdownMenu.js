@@ -4,7 +4,7 @@ import "./dropdown.css"
 
 const DropdownMenu = () => {
     return (
-        <div>
+        <div className="fade-transition">
             <ul className="dropdown-menu">
                 <li>
                     <Link to="/acupuncture_info">Acupuncture</Link>
