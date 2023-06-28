@@ -11,6 +11,9 @@ import TherapistPage from "./pages/TherapistPage";
 import SchedulePage from "./pages/SchedulePage";
 import AboutPage from "./pages/AboutPage";
 import ThanksPage from "./pages/ThanksPage";
+import MassageInfoPage from "./pages/MassageInfoPage";
+import AcupunctureInfoPage from "./pages/AcupunctureInfoPage";
+import ReikiInfoPage from "./pages/ReikiInfoPage";
 import App from "./App";
 
 const baseUrl = "http://localhost:5555"
@@ -28,7 +31,10 @@ const AppRouter = () => {
                     <Route path="/therapist" element={<TherapistPage baseUrl={baseUrl} />} />
                     <Route path="/membership" element={<MembershipPage />} />
                     <Route path="/about" element={<AboutPage />} />
-                    <Route path="/thanks" element={<ThanksPage />} />
+                    <Route path="/massage_info" element={<MassageInfoPage />} />
+                    <Route path="/acupuncture_info" element={<AcupunctureInfoPage />} />
+                    <Route path="/reiki_info" element={<ReikiInfoPage />} />
+                    <Route path="/thanks" element={<ThanksPage baseUrl={baseUrl} />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
