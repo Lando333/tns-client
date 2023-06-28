@@ -1,8 +1,8 @@
 import React from "react";
 import "./services.css"
-import acu_thumb2 from "./images/acu_thumb.jpg"
-import massage_thumb2 from "./images/massage_thumb.jpg"
-import reiki_thumb2 from "./images/reiki_thumb.jpg"
+import acu_thumb2 from "./images/acu_thumb2.webp"
+import massage_thumb2 from "./images/massage_thumb2.webp"
+import reiki_thumb2 from "./images/reiki_thumb2.webp"
 import { Link } from "react-router-dom";
 
 const ServicesInfo = () => {
@@ -32,6 +32,7 @@ const ServicesInfo = () => {
                     </Link>
                 </div>
             </div>
+            <br /><br /><br />
         </div>
     );
 };
