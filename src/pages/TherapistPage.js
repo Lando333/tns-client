@@ -4,7 +4,7 @@ import { UserContext } from "../UserContext";
 import "../profile.css"
 
 const TherapistPage = ({ baseUrl }) => {
-    const {user} = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const [error, setError] = useState("")
     const [confirmMsg, setConfirmMsg] = useState("")
     const [schedule, setSchedule] = useState({
@@ -80,7 +80,8 @@ const TherapistPage = ({ baseUrl }) => {
                     startTime: schedule.friday.startTime,
                     endTime: schedule.friday.endTime,
                 },
-                saturday: {startTime: schedule.saturday.startTime,
+                saturday: {
+                    startTime: schedule.saturday.startTime,
                     endTime: schedule.saturday.endTime,
                 },
             };
@@ -118,10 +119,21 @@ const TherapistPage = ({ baseUrl }) => {
     };
 
     const renderTimeOptions = () => {
-        return Array.from({ length: 8 }, (_, i) => {
+        return Array.from({ length: 9 }, (_, i) => {
             const hour = 12 + i; // Start from 12 PM
             const formattedHour = hour === 12 ? 12 : hour % 12; // Convert 12 to 12 PM instead of 0 PM
             const period = hour < 12 ? "AM" : "PM";
+
+            if (formattedHour === 8) {
+                return (
+                    <React.Fragment key={`${formattedHour}:00 ${period}`}>
+                        <option value={`${formattedHour}:00 ${period}`}>
+                            {`${formattedHour}:00 ${period}`}
+                        </option>
+                    </React.Fragment>
+                );
+            }
+
             return (
                 <React.Fragment key={`${formattedHour}:00 ${period}`}>
                     <option value={`${formattedHour}:00 ${period}`}>
@@ -139,7 +151,7 @@ const TherapistPage = ({ baseUrl }) => {
         <div>
             <h1>Update Schedule</h1>
             <p className="error" style={{ textAlign: "center" }}>{error ? error : ""}</p>
-            <p style={{ textAlign: "center", color: "lightgreen" }}>{ confirmMsg ? confirmMsg : "" }</p>
+            <p style={{ textAlign: "center", color: "lightgreen" }}>{confirmMsg ? confirmMsg : ""}</p>
             <form onSubmit={handleSubmit} className="schedule-form">
                 <div className="grid-container">
                     <div className="grid-row">
