@@ -1,0 +1,41 @@
+.services-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.services-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.info-pic{
+    width: 810px;
+}
+
+.left-align{
+    text-align: left;
+}
+
+.service-column {
+    flex: 1;
+    max-width: 300px;
+    text-align: center;
+}
+
+.service-column img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+}
+
+.service-column h3 {
+    margin: 10px 0;
+}
+
+.service-column button {
+    padding: 10px 20px;
+    background-color: #ddd;
+    border: none;
+    cursor: pointer;
+}
