@@ -31,25 +31,24 @@ const SchedulePage = ({ baseUrl }) => {
     const timeFormat = (date, culture, localizer) =>
         format(date, "h a", { locale: localizer.locale });
 
-    const user = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const [error, setError] = useState("")
     const [therapists, setTherapists] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedTherapistName, setSelectedTherapistName] = useState("");
     const [selectedTherapistId, setSelectedTherapistId] = useState(0);
+    
+    const today = new Date();
     const [newEvent, setNewEvent] = useState({
         therapist: "",
         service: "",
-        duration: 60,
-        start: new Date(),
+        duration: "",
+        start: today,
         time: "12:00 PM",
-        end: new Date(),
+        end: today,
     });
     const [unavailableDates, setUnavailableDates] = useState([]);
-    const [today, setToday] = useState(new Date());
-
-    useEffect(() => {setToday(new Date())}, [])
 
     const filterDate = (date) => {
         if (date < today)
@@ -60,6 +59,7 @@ const SchedulePage = ({ baseUrl }) => {
         return true; // Enables the date
     };
 
+    // Sets event to selected time slot
     useEffect(() => {
         const timeParts = newEvent.time.split(/:|\s/);
         const selectedTime = new Date(newEvent.start);
@@ -130,6 +130,27 @@ const SchedulePage = ({ baseUrl }) => {
         }
     };
 
+    const [therapistSchedule, setTherapistSchedule] = useState([]);
+
+    useEffect(() => {
+        fetchSchedule();
+    }, [selectedTherapistId]);
+    const fetchSchedule = async () => {
+        if (selectedTherapistId) {
+            try {
+                const response = await fetch(
+                    baseUrl + `/get_therapist_schedule/${selectedTherapistId}`
+                );
+                const data = await response.json();
+                setTherapistSchedule(data);
+            } catch (error) {
+                console.error("Error fetching schedule:", error);
+            }
+        } else {
+            setTherapistSchedule([]); // Reset schedule when no therapist is selected
+        }
+    };
+
     const [allEvents, setAllEvents] = useState(appointments);
 
     useEffect(() => {
@@ -144,13 +165,39 @@ const SchedulePage = ({ baseUrl }) => {
                 title: `${appointment.title}`,
             };
         });
-
         setAllEvents(updatedEvents);
     }, [appointments]);
+
+
+    const createAppointment = async (updatedEvent) => {
+        try {
+            const response = await fetch(baseUrl + "/create_appointment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedEvent),
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMessage = errorData.message;
+                setError(errorMessage);
+                throw new Error(errorMessage);
+            }
+        } catch (error) {
+            // console.log(error)
+            setError(error);
+        }
+    };
+
 
     const handleAddEvent = async (e) => {
         e.preventDefault();
         try {
+            if (user === null) {
+                setError("You must be logged in to schedule a treatment!")
+                return
+            }
             const formattedStart = newEvent.start.toISOString();
             const appointmentDate = formattedStart.split('T')[0];
             const updatedEvent = {
@@ -161,9 +208,6 @@ const SchedulePage = ({ baseUrl }) => {
                 time: newEvent.time,
                 start: appointmentDate,
             };
-            console.log("updated event")
-            console.log(updatedEvent)
-
             const r = await fetch(baseUrl + "/check_schedule", {
                 method: "POST",
                 headers: {
@@ -178,15 +222,12 @@ const SchedulePage = ({ baseUrl }) => {
                 throw new Error(errorMessage);
             }
 
-            // $$$$$$$$$$$$$ Payment API $$$$$$$$$$$$
+            createAppointment(updatedEvent);
+
+            // $$ Payment API $$
             const stripePromise = loadStripe("pk_test_Tf1S5BkuE7m8m8LfpcfX82LN");
             if (updatedEvent.duration === 60) {
-                const response = await fetch(baseUrl + "/tx60", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"  // Add this line to set the Content-Type header
-                    }
-                })
+                const response = await fetch(baseUrl + "/tx60")
                 if (!response.ok) {
                     const errorData = await response.json();
                     const errorMessage = errorData.message;
@@ -195,6 +236,7 @@ const SchedulePage = ({ baseUrl }) => {
                 }
                 const responseData = await response.json();
                 const sessionId = responseData.session_id;
+
                 // Redirect to Stripe Checkout
                 const stripe = await stripePromise;
                 const { error } = await stripe.redirectToCheckout({
@@ -205,6 +247,7 @@ const SchedulePage = ({ baseUrl }) => {
                     throw new Error(error.message);
                 }
             }
+
             else if (updatedEvent.duration === 90) {
                 const response = await fetch(baseUrl + "/tx90");
                 if (!response.ok) {
@@ -226,20 +269,6 @@ const SchedulePage = ({ baseUrl }) => {
                 }
             }
 
-            // Make the API request to create a new appointment
-            const resp = await fetch(baseUrl + "/create_appointment", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(updatedEvent)
-            });
-            if (!resp.ok) {
-                const errorData = await resp.json();
-                const errorMessage = errorData.error;
-                setError(errorMessage)
-                throw new Error(errorMessage);
-            }
 
             const newEventWithDates = {
                 ...updatedEvent,
@@ -251,7 +280,7 @@ const SchedulePage = ({ baseUrl }) => {
             setNewEvent({
                 therapist: "",
                 service: "",
-                duration: 60,
+                duration: "",
                 start: new Date(),
                 time: "12:00 PM",
                 end: new Date(),
@@ -261,6 +290,8 @@ const SchedulePage = ({ baseUrl }) => {
             console.error("Error saving event:", error);
         }
     }
+
+
 
 
     return (
@@ -291,7 +322,7 @@ const SchedulePage = ({ baseUrl }) => {
                         </Form.Select>
 
                         <Form.Select
-                            style={{ width: "132px", marginRight: "12px" }}
+                            style={{ width: "121px", marginRight: "12px" }}
                             value={newEvent.service}
                             onChange={(e) => {
                                 setNewEvent({ ...newEvent, service: e.target.value })
@@ -304,17 +335,18 @@ const SchedulePage = ({ baseUrl }) => {
                                 </option>
                             ))}
                         </Form.Select>
-                    </div>
 
-                    <label className="form-text">Duration:</label>
-                    <Form.Select
-                        style={{ width: "90px", marginRight: "10px" }}
-                        value={newEvent.duration}
-                        onChange={(e) => setNewEvent({ ...newEvent, duration: Number(e.target.value) })}
-                    >
-                        <option value={60}>60 minutes</option>
-                        <option value={90}>90 minutes</option>
-                    </Form.Select><br /><br />
+
+                        <Form.Select
+                            style={{ width: "114px", marginRight: "10px" }}
+                            value={newEvent.duration}
+                            onChange={(e) => setNewEvent({ ...newEvent, duration: Number(e.target.value) })}
+                        >
+                            <option value="">Select duration</option>
+                            <option value={60}>60 minutes</option>
+                            <option value={90}>90 minutes</option>
+                        </Form.Select><br /><br />
+                    </div>
 
 
                     <div className="sched-form-date-time">
@@ -346,6 +378,25 @@ const SchedulePage = ({ baseUrl }) => {
                                     const hour = 12 + i; // Start from 12 PM
                                     const formattedHour = hour === 12 ? 12 : hour % 12; // Convert 12 to 12 PM instead of 0 PM
                                     const period = hour < 12 ? "AM" : "PM";
+
+                                    if (newEvent.duration === 60 && formattedHour === 7) {
+                                        return (
+                                            <React.Fragment key={`${formattedHour}:00 ${period}`}>
+                                                <option value={`${formattedHour}:00 ${period}`}>
+                                                    {`${formattedHour}:00 ${period}`}
+                                                </option>
+                                            </React.Fragment>
+                                        );
+                                    }
+                                    else if (newEvent.duration === 90 && formattedHour === 6) {
+                                        return (
+                                            <React.Fragment key={`${formattedHour}:00 ${period}`}>
+                                                <option value={`${formattedHour}:00 ${period}`}>
+                                                    {`${formattedHour}:00 ${period}`}
+                                                </option>
+                                            </React.Fragment>
+                                        );
+                                    }
                                     return (
                                         <React.Fragment key={`${formattedHour}:00 ${period}`}>
                                             <option value={`${formattedHour}:00 ${period}`}>{`${formattedHour}:00 ${period}`}</option>
@@ -357,7 +408,9 @@ const SchedulePage = ({ baseUrl }) => {
                         </div>
                     </div>
 
-                    <Button type="submit">Submit</Button>
+                    {user ? <Button type="submit">Submit</Button> :
+                        <p style={{paddingTop:"33px"}}>You must be logged in!</p>}
+
                     <p className="error">{error ? error : ""}</p>
                 </Form>
             </div>

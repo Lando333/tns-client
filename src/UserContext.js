@@ -40,9 +40,9 @@ export const UserProvider = ({ children, baseUrl }) => {
         }
     }, [baseUrl, user]);
 
-return (
-    <UserContext.Provider value={{ user, isTherapist }}>
-        {children}
-    </UserContext.Provider>
-);
+    return (
+        <UserContext.Provider value={{ user, isTherapist }}>
+            {children}
+        </UserContext.Provider>
+    );
 };
