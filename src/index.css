@@ -5,6 +5,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(22, 22, 22);
   color: white;
+  /* viewport-fit: 500ch; */
 }
 
 img {
@@ -20,24 +21,14 @@ img {
   width: 50%;
   text-align: center;
   margin: auto;
-  /* background-color: red; */
 }
 
 .app-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin: auto; */
-  /* height: 100vh; */
 }
 
-.services-info{
-  background-color: rgb(81, 179, 240);
-  max-width: 100%;
-  position: absolute;
-  left: 0;
-  right: 0;
-}
 
 h1 {
   font-size: 60px;
@@ -54,7 +45,6 @@ h2{
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: gray; */
 }
 
 .date-picker {
@@ -122,6 +112,8 @@ input {
   padding: 6px;
   border: 2px solid rgb(163, 163, 163);
   border-radius: 5px;
+  padding-left: 15px;
+  padding-top: 9px;
 }
 
 .error {
