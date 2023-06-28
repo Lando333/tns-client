@@ -1,18 +1,29 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import LoginBox from "./LoginBox";
 import { UserContext } from "./UserContext";
+import DropdownMenu from "./DropdownMenu";
 
 const NavBar = ({ baseUrl }) => {
     const { isTherapist } = useContext(UserContext);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    console.log(isTherapist)
+    const handleDropdownOpen = () => {
+        setIsDropdownOpen(true);
+    };
+
+    const handleDropdownClose = () => {
+        setIsDropdownOpen(false);
+    };
 
     return (<>
-        <nav>
+        <nav
+            onMouseLeave={handleDropdownClose}>
             <ul className="navbar">
-                <li>
-                    <Link to="/">Home</Link>
+                <li
+                    onMouseEnter={handleDropdownOpen}
+                >
+                    <Link to="/">Home</Link><br /><br />
                 </li>
                 <li>
                     <Link to="/schedule">Schedule</Link>
@@ -29,6 +40,7 @@ const NavBar = ({ baseUrl }) => {
                 </li>
                 }
             </ul>
+            {isDropdownOpen && <DropdownMenu />}
             <LoginBox baseUrl={baseUrl} />
         </nav>
     </>
