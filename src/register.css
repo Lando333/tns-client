@@ -1,0 +1,27 @@
+.form-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.label {
+    flex: 0 0 200px;
+    /* Adjust the width as needed */
+    padding-right: 10px;
+    text-align: right;
+}
+
+input[type="text"],
+input[type="password"] {
+    flex: 1;
+}
+
+.submit-reg{
+    text-align: center;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    /* Adjust margin as needed */
+}
