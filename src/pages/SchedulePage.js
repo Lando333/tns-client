@@ -130,26 +130,25 @@ const SchedulePage = ({ baseUrl }) => {
         }
     };
 
-    const [therapistSchedule, setTherapistSchedule] = useState([]);
-
-    useEffect(() => {
-        fetchSchedule();
-    }, [selectedTherapistId]);
-    const fetchSchedule = async () => {
-        if (selectedTherapistId) {
-            try {
-                const response = await fetch(
-                    baseUrl + `/get_therapist_schedule/${selectedTherapistId}`
-                );
-                const data = await response.json();
-                setTherapistSchedule(data);
-            } catch (error) {
-                console.error("Error fetching schedule:", error);
-            }
-        } else {
-            setTherapistSchedule([]); // Reset schedule when no therapist is selected
-        }
-    };
+    // const [therapistSchedule, setTherapistSchedule] = useState([]);
+    // useEffect(() => {
+    //     fetchSchedule();
+    // }, [selectedTherapistId]);
+    // const fetchSchedule = async () => {
+    //     if (selectedTherapistId) {
+    //         try {
+    //             const response = await fetch(
+    //                 baseUrl + `/get_therapist_schedule/${selectedTherapistId}`
+    //             );
+    //             const data = await response.json();
+    //             setTherapistSchedule(data);
+    //         } catch (error) {
+    //             console.error("Error fetching schedule:", error);
+    //         }
+    //     } else {
+    //         setTherapistSchedule([]); // Reset schedule when no therapist is selected
+    //     }
+    // };
 
     const [allEvents, setAllEvents] = useState(appointments);
 
@@ -290,8 +289,6 @@ const SchedulePage = ({ baseUrl }) => {
             console.error("Error saving event:", error);
         }
     }
-
-
 
 
     return (

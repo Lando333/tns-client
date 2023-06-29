@@ -4,7 +4,6 @@ import httpClient from "./httpClient";
 import { UserContext } from "./UserContext";
 import Card from 'react-bootstrap/Card';
 
-
 const LoginBox = ({ baseUrl }) => {
     const {user} = useContext(UserContext);
 
@@ -23,7 +22,7 @@ const LoginBox = ({ baseUrl }) => {
                 <Card.Body>
                     <Card.Title>
                     Welcome, {user.first_name}!<br />
-                    {user.user_id}
+                    {/* {user.user_id} */}
                     </Card.Title>
                     <Card.Text>
                         <Link to="/" onClick={logoutUser}>Logout</Link>
