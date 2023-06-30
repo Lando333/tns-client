@@ -17,27 +17,27 @@ const TherapistPage = ({ baseUrl }) => {
         saturday: { startTime: "", endTime: "" }
     });
 
-    const turnUserIntoTherapist = () => {
-        const userId = document.getElementById("userId").value;
-        if (userId) {
-            fetch(baseUrl + "/create_therapist", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: userId,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    alert(data.message);
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                });
-        }
-    };
+    // const turnUserIntoTherapist = () => {
+    //     const userId = document.getElementById("userId").value;
+    //     if (userId) {
+    //         fetch(baseUrl + "/create_therapist", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //             },
+    //             body: JSON.stringify({
+    //                 email: userId,
+    //             }),
+    //         })
+    //             .then((response) => response.json())
+    //             .then((data) => {
+    //                 alert(data.message);
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error:", error);
+    //             });
+    //     }
+    // };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -374,9 +374,9 @@ const TherapistPage = ({ baseUrl }) => {
             <div>
                 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
                 <br /><br /><br /><br />
-                <label htmlFor="userId">User ID:</label>
+                {/* <label htmlFor="userId">User Email:</label>
                 <input type="text" id="userId" />
-                <button onClick={turnUserIntoTherapist}>Turn User into Therapist</button>
+                <button onClick={turnUserIntoTherapist}>Turn User into Therapist</button> */}
             </div>
         </div>
     );

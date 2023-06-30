@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import httpClient from "../httpClient"
-import "../register.css"
+// import "../register.css"
 
 const RegisterPage = ({ baseUrl }) => {
     const [email, setEmail] = useState("")
@@ -45,7 +45,7 @@ const RegisterPage = ({ baseUrl }) => {
                     },
                 });
             console.log(resp)
-            // window.location.href = "/";
+            window.location.href = "/";
             if (!resp.ok) {
                 const errorData = await resp.json();
                 const errorMessage = errorData.error;
